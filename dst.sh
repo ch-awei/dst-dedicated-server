@@ -115,19 +115,13 @@ function load_mods() {
 
   local setup_file="$DST_PATH/../mods/dedicated_server_mods_setup.lua"
   mkdir -p "$(dirname "$setup_file")"
-  touch "$setup_file"
+  : > "$setup_file"
 
   while IFS= read -r mod_id; do
-    local line1="ServerModSetup(\"$mod_id\")"
-    if ! grep -Fxq "$line1" "$setup_file"; then
-      echo "$line1" >> "$setup_file"
-    fi
+    echo "ServerModSetup(\"$mod_id\")" >> "$setup_file"
     local mod_num=$(echo "$mod_id" | grep -oE '[0-9]+' || true)
     if [ -n "$mod_num" ]; then
-      local line2="ServerModSetup(\"$mod_num\")"
-      if ! grep -Fxq "$line2" "$setup_file"; then
-        echo "$line2" >> "$setup_file"
-      fi
+      echo "ServerModSetup(\"$mod_num\")" >> "$setup_file"
     fi
   done <<< "$mod_ids"
 
